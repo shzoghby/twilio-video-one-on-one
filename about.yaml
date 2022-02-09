@@ -1,0 +1,5 @@
+version: 1
+type: admiral_role
+admiral_role: zaproxy
+jira_project_id: PRODSEC
+other_admiral_roles: [zaproxy-part2, zaproxy-part3]
