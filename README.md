@@ -1,6 +1,6 @@
-# Dentalprenr Video App
+# twilio-video-one-on-one
 
-A basic video conference app with Twilio Video. This app will generate a passcode-protected conference room and you can enter, leave, and invite others [Check out this code exchange for a walkthrough of the app](https://www.twilio.com/code-exchange/basic-video-chat?language=functions). The APP is customised with styling and branding of [Dentalprenr](https://dentalprenr.com/)
+A basic video conference app with Twilio Video. This app will generate a passcode-protected conference room and you can enter, leave, and invite others [Check out this code exchange for a walkthrough of the app](https://www.twilio.com/code-exchange/basic-video-chat?language=functions).
 
 ## Pre-requisites
 
@@ -63,5 +63,7 @@ twilio serverless:deploy
 
 ## Screen Shots
 ![Landing Page](readme/landing-page.png)
-![One Participant](readme/one-participant.png)
-![Three Participants](readme/three-participants.png)
+![Host Join](readme/host-join.png)
+![Participant Join](readme/participant-join.png)
+![Host View](readme/host-view.png)
+
