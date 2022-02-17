@@ -2,7 +2,11 @@
 
 A basic video conference app with Twilio Video. This app will generate a passcode-protected conference room and you can enter, leave, and invite others [Check out this code exchange for a walkthrough of the app](https://www.twilio.com/code-exchange/basic-video-chat?language=functions).
 
+---
 ## Pre-requisites
+
+### Twilio Console
+Make sure *Maximum Participants* is set to 2 in Default Room Settings under Video [here](https://console.twilio.com/us1/develop/video/manage/room-settings?frameUrl=%2Fconsole%2Fvideo%2Fconfigure%3Fx-target-region%3Dus1) 
 
 ### Environment variables
 
@@ -26,40 +30,39 @@ In your `.env` file, set the following values:
 | passcode  | The passcode the user entered on the website | Yes      |
 | roomName  | The roomName the user want to start conference on the website | Yes      |
 
-## Create a new project with the template
+---
 
-1. Install the [Twilio CLI](https://www.twilio.com/docs/twilio-cli/quickstart#install-twilio-cli)
-2. Install the [serverless toolkit](https://www.twilio.com/docs/labs/serverless-toolkit/getting-started)
+## Start the application locally
+
+1. Install the packagaes
 
 ```shell
-twilio plugins:install @twilio-labs/plugin-serverless
+npm ci
 ```
 
-3. Initiate a new project
-
-```
-twilio serverless:init example --template=video && cd example
-```
-
-4. Start the server with the [Twilio CLI](https://www.twilio.com/docs/twilio-cli/quickstart):
+2. Start the server locally with the [Twilio CLI](https://www.twilio.com/docs/twilio-cli/quickstart):
 
 ```
 twilio serverless:start
 ```
 
-5. Open the web page at https://localhost:3000/index.html to test the app
+3. Open the web page at https://localhost:3000/index.html to test the app
 
 ℹ️ Check the developer console and terminal for any errors, make sure you've set your environment variables.
 
-## Deploying
+---
+
+## Deploy the application
 
 Deploy your functions and assets with either of the following commands. Note: you must run these commands from inside your project folder. [More details in the docs.](https://www.twilio.com/docs/labs/serverless-toolkit)
 
 With the [Twilio CLI](https://www.twilio.com/docs/twilio-cli/quickstart):
 
+```shell
+twilio serverless:deploy --environment=dev --env=.env.dev
 ```
-twilio serverless:deploy
-```
+
+---
 
 ## Screen Shots
 ![Landing Page](readme/landing-page.png)
