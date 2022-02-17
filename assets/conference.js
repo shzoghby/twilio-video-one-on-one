@@ -130,24 +130,39 @@ const participantDisconnected = (participant) => {
   const roomControlsForm = document.getElementById('room-controls-form');
   const preConnectControls = document.getElementById('pre-connect-controls');
   const postConnectControls = document.getElementById('post-connect-controls');
+  const participantsContainerDiv = document.getElementById('participantsContainer');
   const participantsDiv = document.getElementById('participants');
   const permissionsHelp = document.getElementById('permissions-help');
   const roomNameDiv = document.getElementById('room-name');
   const roomUUIDDiv = document.getElementById('room-uuid');
   const copyLink = document.getElementById('copy-link');
+  const participentActionTextDiv = document.getElementById('participentActionText');
+  const hostOnlyActionTextDiv = document.getElementById('hostOnlyActionText');
+  const hostOnlyGoToHomePageDiv = document.getElementById('hostOnlyGoToHomePage');
 
   var roomNameUUID = '';
+  const userName = document.getElementById('username');
+    const usernameLabel = document.getElementById('usernameLabel');
+
   if (getParamValue('hostName')) {
     roomNameUUID = `${getParamValue('hostName').replaceAll(' ', '.')}.${Math.random().toString(36).substring(2, 15)}${Math.random().toString(36).substring(2, 15)}`;
-    const userName = document.getElementById('username');
     userName.value = getParamValue('hostName');
-    userName.disabled = true;
+    userName.style.display = 'none';
+    usernameLabel.style.display = 'none';
+    participentActionTextDiv.style.display = 'none';
+    hostOnlyActionTextDiv.style.display = 'block';
+    hostOnlyGoToHomePageDiv.style.display = 'block';
   }
   else {
     roomNameUUID = getParamValue('roomUUID');
+    userName.style.display = 'block';
+    usernameLabel.style.display = 'block';
+    participentActionTextDiv.style.display = 'block';
+    hostOnlyActionTextDiv.style.display = 'none';
+    hostOnlyGoToHomePageDiv.style.display = 'none';
   }
   roomUUIDDiv.value = roomNameUUID;
-  roomNameDiv.innerHTML = `Welcome to '${roomNameUUID}' room`;
+  roomNameDiv.innerHTML = `Welcome to '${roomNameUUID}'`;
 
   const joinRoom = (event) => {
     const statusDiv = document.getElementById('status');
@@ -220,9 +235,14 @@ const participantDisconnected = (participant) => {
     statusDiv.appendChild(newStatus);
 
     preConnectControls.style.display = 'inline-block';
-    permissionsHelp.style.display = 'block';
+    permissionsHelp.style.display = 'inline-flex';
     postConnectControls.style.display = 'none';
     participantsDiv.style.display = 'none';
+
+    if(!getParamValue('hostName')) {
+      statusDiv.style.display = 'none';
+    }
+
     event.preventDefault();
   };
 })();

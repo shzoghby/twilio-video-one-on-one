@@ -1,0 +1,127 @@
+html, body {
+  height: 100%;
+}
+
+.roomImg {
+  width: 550px;
+  height: 300px;
+}
+
+.content-container {
+  width: 100%;    
+  text-align: -webkit-center;
+}
+
+.btn {
+  width:160px;
+}
+
+.main-container {
+  max-width: 70%;
+  min-height: 100%;
+  text-align: left;
+}
+
+.footer {
+  background: #0d112b;
+  padding: 50px 0;
+}
+
+.footer-statement {
+  text-align: center;
+  color: gray;
+  line-height: 1.2;
+  letter-spacing: 1px;
+  margin: 20px 0 70px;
+  font-size: 2vw;
+}
+
+.bg-hero {
+  height: 336px;
+  background: url(/banner.svg) no-repeat right 0;
+  background-image: url(/banner.svg);
+  background-position-x: right;
+  background-position-y: 0px;
+  background-size: initial;
+  background-repeat-x: no-repeat;
+  background-repeat-y: no-repeat;
+  background-attachment: initial;
+  background-origin: initial;
+  background-clip: initial;
+  background-color: initial;
+}
+
+#twilio-video {
+  color:#fff;
+  display: flex;
+}
+
+#room-controls{
+  color:#fff;
+  width: 80%;
+} 
+
+#status {
+  color: green;
+  font-weight: bolder;
+  padding: 5px;
+}
+div.page-top {
+  border-bottom: 1px solid gray;
+}
+
+div.self-view {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+}
+
+#pre-connect-controls div{
+padding:5px;
+}
+
+#post-connect-controls div{
+  padding:5px;
+  }
+
+div#permissions-help {
+  display: inline-flex;
+  flex-direction: column;
+  align-items: center;
+  max-width: 300px;
+}
+
+div#permissions-help > img {
+  margin-bottom: 0.5em;
+}
+
+input.conference-passcode {
+  width: 320px;
+  margin-right: 1em;
+}
+
+input.room-name {
+  width: 320px;
+  margin-right: 1em;
+}
+
+span.conference-connected {
+  font-weight: bold;
+  width: 320px;
+  margin-right: 1em;
+}
+
+div#no-participants {
+  float: left;
+  width: 100%;
+  font-weight: 400;
+}
+
+@media only screen and (max-width: 767px) {
+  #twilio-video {
+    display: block;
+  }
+  div#permissions-help {
+    display: none;
+  }
+}
