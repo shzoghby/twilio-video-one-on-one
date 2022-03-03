@@ -61,7 +61,7 @@ twilio plugins:install @twilio-labs/plugin-serverless
 twilio serverless:start
 ```
 
-4. Open the web page at https://localhost:3000/index.html to test the app
+5. Open the web page at https://localhost:3000/index.html to test the app
 
 ℹ️ Check the developer console and terminal for any errors, make sure you've set your environment variables.
 
