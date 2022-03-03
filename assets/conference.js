@@ -130,10 +130,8 @@ const participantDisconnected = (participant) => {
 
   const joinRoomButton = document.getElementById('button-join');
   const leaveRoomButton = document.getElementById('button-leave');
-  const roomControlsForm = document.getElementById('room-controls-form');
   const preConnectControls = document.getElementById('pre-connect-controls');
   const postConnectControls = document.getElementById('post-connect-controls');
-  const participantsContainerDiv = document.getElementById('participantsContainer');
   const participantsDiv = document.getElementById('participants');
   const permissionsHelp = document.getElementById('permissions-help');
   const roomNameDiv = document.getElementById('room-name');
@@ -147,6 +145,7 @@ const participantDisconnected = (participant) => {
   const userName = document.getElementById('username');
   const usernameLabel = document.getElementById('usernameLabel');
 
+  // room host
   if (getParamValue('hostName')) {
     roomNameUUID = `${getParamValue('hostName').replaceAll(' ', '.')}.${Math.random().toString(36).substring(2, 15)}${Math.random().toString(36).substring(2, 15)}`;
     userName.value = getParamValue('hostName');
@@ -156,6 +155,8 @@ const participantDisconnected = (participant) => {
     hostOnlyActionTextDiv.style.display = 'block';
     hostOnlyGoToHomePageDiv.style.display = 'block';
   }
+
+  // participant
   else {
     roomNameUUID = getParamValue('roomUUID');
     userName.style.display = 'block';
@@ -166,6 +167,40 @@ const participantDisconnected = (participant) => {
   }
   roomUUIDDiv.value = roomNameUUID;
   roomNameDiv.innerHTML = `Welcome to '${roomNameUUID}'`;
+
+  const connectParticipant = (token, roomUniqueName) => {
+    Video.connect(token, { name: roomUniqueName })
+      .then((room) => {
+        console.log(`Connected to '${room.name}:${room.sid}' room`);
+        const statusDiv = document.getElementById('status');
+        const newStatus = document.createElement('div'); // create div for new participant
+        newStatus.innerHTML = `Connected to room '${room.name}'`;
+        statusDiv.appendChild(newStatus);
+
+        videoRoom = room;
+        room.participants.forEach(participantConnected);
+        room.on('participantConnected', participantConnected);
+
+        room.on('participantDisconnected', participantDisconnected);
+        room.once('disconnected', (error) =>
+          room.participants.forEach(participantDisconnected)
+        );
+        preConnectControls.style.display = 'none';
+        permissionsHelp.style.display = 'none';
+        postConnectControls.style.display = 'inline-block';
+        participantsDiv.style.display = 'flex';
+
+        if (getParamValue('hostName')) {
+          copyLink.style.display = 'block';
+        }
+        else {
+          copyLink.style.display = 'none';
+        }
+      })
+      .catch((err) => {
+        console.error(err);
+      });
+  }
 
   const joinRoom = (event) => {
     const statusDiv = document.getElementById('status');
@@ -188,46 +223,18 @@ const participantDisconnected = (participant) => {
       })
       .then((body) => {
         const { token } = body;
-        axiosInstance.post(
-          `/video-room-create`
-          , { uniqueName: roomNameUUID }
-        )
-          .then((response) => {
-            return response.data.result.map;
-          })
-          .then((roomCreated) => {
-            return Video.connect(token, { name: roomCreated.uniqueName });
-          })
-          .then((room) => {
-            console.log(`Connected to '${room.name}:${room.sid}' room`);
-            const statusDiv = document.getElementById('status');
-            const newStatus = document.createElement('div'); // create div for new participant
-            newStatus.innerHTML = `Connected to room '${room.name}'`;
-            statusDiv.appendChild(newStatus);
-
-            videoRoom = room;
-            room.participants.forEach(participantConnected);
-            room.on('participantConnected', participantConnected);
-
-            room.on('participantDisconnected', participantDisconnected);
-            room.once('disconnected', (error) =>
-              room.participants.forEach(participantDisconnected)
-            );
-            preConnectControls.style.display = 'none';
-            permissionsHelp.style.display = 'none';
-            postConnectControls.style.display = 'inline-block';
-            participantsDiv.style.display = 'flex';
-
-            if (getParamValue('hostName')) {
-              copyLink.style.display = 'block';
-            }
-            else {
-              copyLink.style.display = 'none';
-            }
-          })
-          .catch((err) => {
-            console.error(err);
-          });
+        if (!getParamValue('roomUUID')) {
+          axiosInstance.post(
+            `/video-room-create`
+            , { uniqueName: roomNameUUID }
+          )
+            .then((response) => {
+              connectParticipant(token, response.data.result.map.uniqueName);
+            });
+        }
+        else {
+          connectParticipant(token, getParamValue('roomUUID'));
+        }
       })
       .catch((err) => {
         console.error(err);
