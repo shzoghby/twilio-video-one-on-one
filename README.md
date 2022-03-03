@@ -5,9 +5,6 @@ A basic video conference app with Twilio Video. This app will generate a passcod
 ---
 ## Pre-requisites
 
-### Twilio Console
-Make sure *Maximum Participants* is set to 2 in Default Room Settings under Video [here](https://console.twilio.com/us1/develop/video/manage/room-settings?frameUrl=%2Fconsole%2Fvideo%2Fconfigure%3Fx-target-region%3Dus1) 
-
 ### Environment variables
 
 This project requires some environment variables to be set. To keep your tokens and secrets secure, make sure to not commit the `.env` file in git. When setting up the project with `twilio serverless:init ...` the Twilio CLI will create a `.gitignore` file that excludes `.env` from the version history.
@@ -27,8 +24,14 @@ In your `.env` file, set the following values:
 
 | Parameter | Description                                  | Required |
 | :-------- | :------------------------------------------- | :------- |
-| passcode  | The passcode the user entered on the website | Yes      |
+| passcode  | The passcode the user entered on the website to join the conference | Yes      |
 | roomName  | The roomName the user want to start conference on the website | Yes      |
+
+`/video-room-create` expects the following parameters:
+
+| Parameter | Description                                  | Required |
+| :-------- | :------------------------------------------- | :------- |
+| uniqueName  | The uniqueName for the room to be created for the conference | Yes      |
 
 ---
 
@@ -40,13 +43,25 @@ In your `.env` file, set the following values:
 npm ci
 ```
 
-2. Start the server locally with the [Twilio CLI](https://www.twilio.com/docs/twilio-cli/quickstart):
+2. Install [Twilio CLI](https://www.twilio.com/docs/twilio-cli/quickstart#install-the-twilio-cli)
+
+```
+brew tap twilio/brew && brew install twilio
+```
+
+3. Install [Serverless Plugin](https://www.twilio.com/docs/twilio-cli/quickstartt#install-the-serverless-plugin)
+
+```
+twilio plugins:install @twilio-labs/plugin-serverless
+```
+
+4. Start the server locally with the Serverless Plugin:
 
 ```
 twilio serverless:start
 ```
 
-3. Open the web page at https://localhost:3000/index.html to test the app
+4. Open the web page at https://localhost:3000/index.html to test the app
 
 ℹ️ Check the developer console and terminal for any errors, make sure you've set your environment variables.
 
@@ -54,14 +69,13 @@ twilio serverless:start
 
 ## Deploy the application
 
-Deploy your functions and assets with either of the following commands. Note: you must run these commands from inside your project folder. [More details in the docs.](https://www.twilio.com/docs/labs/serverless-toolkit)
-
-With the [Twilio CLI](https://www.twilio.com/docs/twilio-cli/quickstart):
+Deploy your functions and assets with the following command. 
 
 ```shell
 twilio serverless:deploy --environment=dev --env=.env.dev
 ```
 
+ℹ️ Note: you must run the commands from inside your project folder. [More details in the docs.](https://www.twilio.com/docs/labs/serverless-toolkit)
 ---
 
 ## Screen Shots

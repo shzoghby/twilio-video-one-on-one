@@ -1,5 +1,12 @@
 // Keeps track of video elements and their event listeners
 const videoElements = {};
+const axiosInstance = axios.create({
+  baseURL: window.location.href.substring(0, window.location.href.lastIndexOf("/")),
+  headers: {
+    'Accept': 'application/json',
+    'Content-Type': 'application/json'
+  }
+});
 
 function copyMeetingLink() {
   /* Get the text field */
@@ -11,9 +18,6 @@ function copyMeetingLink() {
 
   /* Copy the text inside the text field */
   navigator.clipboard.writeText(`${window.location.origin}/conference.html?roomUUID=${copyText.value}`);
-
-  /* Alert the copied text */
-  //alert("Copied the text: " + copyText.value);
 }
 
 // Listen to onPlay and onPause events and intelligently re-attach the video element
@@ -114,7 +118,6 @@ const participantDisconnected = (participant) => {
 (() => {
   const { Video } = Twilio;
   let videoRoom;
-  let localStream;
   const video = document.getElementById('video');
 
   // preview screen
@@ -142,7 +145,7 @@ const participantDisconnected = (participant) => {
 
   var roomNameUUID = '';
   const userName = document.getElementById('username');
-    const usernameLabel = document.getElementById('usernameLabel');
+  const usernameLabel = document.getElementById('usernameLabel');
 
   if (getParamValue('hostName')) {
     roomNameUUID = `${getParamValue('hostName').replaceAll(' ', '.')}.${Math.random().toString(36).substring(2, 15)}${Math.random().toString(36).substring(2, 15)}`;
@@ -185,40 +188,49 @@ const participantDisconnected = (participant) => {
       })
       .then((body) => {
         const { token } = body;
-        //console.log(token);
-        // connect to room
-        return Video.connect(token, { name: roomUUIDDiv.value });
-      })
-      .then((room) => {
-        console.log(`Connected to '${room.name}:${room.sid}' room`);
-        const statusDiv = document.getElementById('status');
-        const newStatus = document.createElement('div'); // create div for new participant
-        newStatus.innerHTML = `Connected to room '${room.name}''`;
-        statusDiv.appendChild(newStatus);
+        axiosInstance.post(
+          `/video-room-create`
+          , { uniqueName: roomNameUUID }
+        )
+          .then((response) => {
+            return response.data.result.map;
+          })
+          .then((roomCreated) => {
+            return Video.connect(token, { name: roomCreated.uniqueName });
+          })
+          .then((room) => {
+            console.log(`Connected to '${room.name}:${room.sid}' room`);
+            const statusDiv = document.getElementById('status');
+            const newStatus = document.createElement('div'); // create div for new participant
+            newStatus.innerHTML = `Connected to room '${room.name}'`;
+            statusDiv.appendChild(newStatus);
 
-        videoRoom = room;
-        room.participants.forEach(participantConnected);
-        room.on('participantConnected', participantConnected);
+            videoRoom = room;
+            room.participants.forEach(participantConnected);
+            room.on('participantConnected', participantConnected);
 
-        room.on('participantDisconnected', participantDisconnected);
-        room.once('disconnected', (error) =>
-          room.participants.forEach(participantDisconnected)
-        );
-        preConnectControls.style.display = 'none';
-        permissionsHelp.style.display = 'none';
-        postConnectControls.style.display = 'inline-block';
-        participantsDiv.style.display = 'flex';
+            room.on('participantDisconnected', participantDisconnected);
+            room.once('disconnected', (error) =>
+              room.participants.forEach(participantDisconnected)
+            );
+            preConnectControls.style.display = 'none';
+            permissionsHelp.style.display = 'none';
+            postConnectControls.style.display = 'inline-block';
+            participantsDiv.style.display = 'flex';
 
-        if(getParamValue('hostName')) {
-          copyLink.style.display = 'block';
-        }
-        else {
-          copyLink.style.display = 'none';
-        }
+            if (getParamValue('hostName')) {
+              copyLink.style.display = 'block';
+            }
+            else {
+              copyLink.style.display = 'none';
+            }
+          })
+          .catch((err) => {
+            console.error(err);
+          });
       })
       .catch((err) => {
-        // eslint-disable-next-line no-alert
-        alert(err.message);
+        console.error(err);
       });
   };
 
@@ -239,7 +251,7 @@ const participantDisconnected = (participant) => {
     postConnectControls.style.display = 'none';
     participantsDiv.style.display = 'none';
 
-    if(!getParamValue('hostName')) {
+    if (!getParamValue('hostName')) {
       statusDiv.style.display = 'none';
     }
 
