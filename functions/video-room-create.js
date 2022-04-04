@@ -11,8 +11,7 @@ exports.handler = function (context, event, callback) {
 
   const messageRequest = client.video.rooms
     .create({recordParticipantsOnConnect: true,
-      statusCallback: `${WEB_URL}/video-room-callback`,
-      StatusCallbackEvent: ['room-created', 'recording-started', 'recording-completed'],
+      statusCallback: `${WEB_URL}`,
       type: 'group',
       uniqueName: `${event.uniqueName}`})
     .then(map => {
